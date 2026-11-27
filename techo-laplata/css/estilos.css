@@ -1,0 +1,980 @@
+/* =========================================================
+   TECHO La Plata — Hoja de estilos
+   Mobile first · BEM en español · Sin frameworks
+   Índice:
+   1. Variables de diseño (:root)
+   2. Base y reset
+   3. Layout: página, .contenedor y .grilla
+   4. Átomos
+   5. Moléculas
+   6. Organismos
+   7. Utilidades
+   ========================================================= */
+
+
+/* =========================================================
+   1. VARIABLES DE DISEÑO (Etapa 2.1)
+   ========================================================= */
+:root {
+  /* Paleta de colores */
+  --color-marca: #0092DD;
+  --color-marca-oscuro: #006FA8;
+  --color-accion: #F28C28;
+  --color-accion-hover: #D9731A;
+  --color-texto: #1F2933;
+  --color-texto-suave: #5B6670;
+  --color-fondo: #FFFFFF;
+  --color-superficie: #F2F6F9;
+  --color-borde: #D6DEE5;
+
+  /* Tipografía */
+  --fuente-titulos: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --fuente-texto: "Open Sans", "Segoe UI", Arial, sans-serif;
+
+  /* Escala tipográfica (base 16 px) */
+  --texto-pequeno: 0.875rem;                    /* 14 px */
+  --texto-base: 1rem;                           /* 16 px */
+  --texto-grande: 1.5rem;                       /* 24 px */
+  --texto-titulo: 2rem;                         /* 32 px */
+  --texto-display: clamp(2.5rem, 5vw, 3.5rem);  /* 40 a 56 px */
+
+  /* Escala de espaciado (múltiplos de 8 px) */
+  --espacio-xs: 0.25rem;      /* 4 px  */
+  --espacio-sm: 0.5rem;       /* 8 px  */
+  --espacio-md: 1rem;         /* 16 px */
+  --espacio-lg: 2rem;         /* 32 px */
+  --espacio-seccion: 4rem;    /* 64 px */
+  --espacio-borde-pagina: 1rem; /* 1rem en mobile, 2rem desde tablet */
+
+  /* Grilla base (Etapa 2.3) */
+  --ancho-maximo: 1200px;
+  --grilla-columnas: 4;
+  --grilla-gap: var(--espacio-md);
+
+  /* Detalles de forma */
+  --radio: 8px;
+  --sombra: 0 2px 8px rgb(31 41 51 / 0.08);
+}
+
+/* Tablet: 768 a 1023 px */
+@media (min-width: 768px) {
+  :root {
+    --espacio-borde-pagina: 2rem;
+    --grilla-columnas: 8;
+    --grilla-gap: var(--espacio-lg);
+  }
+}
+
+/* Desktop: 1024 px o más */
+@media (min-width: 1024px) {
+  :root {
+    --grilla-columnas: 12;
+  }
+}
+
+
+/* =========================================================
+   2. BASE Y RESET
+   ========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  line-height: 1.6;
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p, ul, figure {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-marca-oscuro);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accion-hover);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   3. LAYOUT
+   ========================================================= */
+
+/* La página: encabezado, contenido y pie */
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* Ancho máximo centrado con margen lateral */
+.contenedor {
+  width: 100%;
+  max-width: calc(var(--ancho-maximo) + 2 * var(--espacio-borde-pagina));
+  margin-inline: auto;
+  padding-inline: var(--espacio-borde-pagina);
+}
+
+/* Grilla base: 4 → 8 → 12 columnas (las columnas cambian en :root) */
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(var(--grilla-columnas), minmax(0, 1fr));
+  gap: var(--grilla-gap);
+  list-style: none;
+}
+
+/* Por defecto cada hijo ocupa todo el ancho */
+.grilla > * {
+  grid-column: 1 / -1;
+}
+
+/* Secciones */
+.seccion {
+  padding-block: var(--espacio-seccion);
+}
+
+.seccion--superficie {
+  background-color: var(--color-superficie);
+}
+
+.seccion__titulo {
+  font-size: var(--texto-titulo);
+  margin-bottom: var(--espacio-md);
+}
+
+.seccion__bajada {
+  color: var(--color-texto-suave);
+  max-width: 60ch;
+  margin-bottom: var(--espacio-lg);
+}
+
+
+/* =========================================================
+   4. ÁTOMOS
+   ========================================================= */
+
+/* --- Botón --- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-xs);
+  padding: var(--espacio-sm) var(--espacio-md);
+  min-height: 44px;
+  border: 2px solid transparent;
+  border-radius: var(--radio);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-base);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.boton--accion {
+  background-color: var(--color-accion);
+  color: var(--color-texto); /* texto oscuro: contraste ~6:1 */
+}
+
+.boton--accion:hover,
+.boton--accion:focus-visible {
+  background-color: var(--color-accion-hover);
+}
+
+.boton--secundario {
+  background-color: transparent;
+  border-color: var(--color-marca-oscuro);
+  color: var(--color-marca-oscuro);
+}
+
+.boton--secundario:hover,
+.boton--secundario:focus-visible {
+  background-color: var(--color-marca-oscuro);
+  color: var(--color-fondo);
+}
+
+/* Ancho completo en mobile */
+.boton--bloque {
+  width: 100%;
+}
+
+/* --- Campo de texto y rótulo --- */
+.rotulo {
+  display: block;
+  margin-bottom: var(--espacio-sm);
+  font-weight: 600;
+}
+
+.campo {
+  display: block;
+  width: 100%;
+  padding: var(--espacio-sm) var(--espacio-md);
+  font: inherit;
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+}
+
+.campo:focus-visible {
+  border-color: var(--color-marca-oscuro);
+}
+
+.campo--area {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.campo--error {
+  border-color: #B3261E;
+}
+
+/* --- Etiqueta / chip --- */
+.etiqueta {
+  display: inline-block;
+  padding: var(--espacio-xs) var(--espacio-sm);
+  border-radius: 999px;
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.etiqueta--dia {
+  background-color: var(--color-marca-oscuro);
+  color: var(--color-fondo);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.etiqueta--barrio {
+  background-color: var(--color-superficie);
+  color: var(--color-marca-oscuro);
+}
+
+/* --- Ícono --- */
+.icono {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.icono--pequeno {
+  width: 1rem;
+  height: 1rem;
+}
+
+.icono--redes {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* --- Imagen --- */
+.imagen {
+  width: 100%;
+}
+
+.imagen--redondeada {
+  border-radius: var(--radio);
+}
+
+.imagen--cubrir {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Logo --- */
+.logo {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--color-fondo);
+}
+
+.logo__marca {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: var(--texto-grande);
+  letter-spacing: 0.08em;
+}
+
+.logo__sede {
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+}
+
+.logo--claro {
+  color: var(--color-fondo);
+}
+
+/* --- Enlace --- */
+.enlace {
+  color: var(--color-marca-oscuro);
+  text-underline-offset: 0.2em;
+}
+
+.enlace--pie {
+  color: var(--color-fondo);
+  font-size: var(--texto-pequeno);
+  text-decoration: none;
+}
+
+.enlace--pie:hover,
+.enlace--pie:focus-visible {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   5. MOLÉCULAS
+   ========================================================= */
+
+/* --- Menú de navegación --- */
+.menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu__item a {
+  display: block;
+  padding: var(--espacio-sm) 0;
+  color: var(--color-fondo);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.menu__item a:hover,
+.menu__item a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.menu__item--activo a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
+/* --- Tarjeta de actividad ---
+   CONTAINER QUERY: la tarjeta mira el ancho de su contenedor
+   (.grilla-actividades__item), no el del viewport.
+   - Angosta (< 32rem): imagen arriba, texto abajo.
+   - Ancha (≥ 32rem): imagen a la izquierda, texto a la derecha.
+   Pasa, por ejemplo, entre 560 y 767 px de pantalla: la grilla tiene
+   una sola columna pero muy ancha, y una tarjeta vertical quedaría
+   con una imagen enorme. En tablet y desktop vuelve a ser vertical
+   porque cada columna es angosta. */
+.grilla-actividades__item {
+  container-type: inline-size;
+  container-name: actividad;
+}
+
+.tarjeta-actividad {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-fondo);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.tarjeta-actividad__imagen {
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+
+.tarjeta-actividad__cuerpo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md);
+  flex-grow: 1;
+}
+
+.tarjeta-actividad__titulo {
+  font-size: var(--texto-grande);
+}
+
+.tarjeta-actividad__lugar {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-suave);
+}
+
+.tarjeta-actividad__lugar .icono {
+  color: var(--color-marca-oscuro);
+}
+
+.tarjeta-actividad__descripcion {
+  flex-grow: 1;
+}
+
+.tarjeta-actividad__boton {
+  width: 100%;
+  margin-top: var(--espacio-sm);
+}
+
+@container actividad (min-width: 32rem) {
+  .tarjeta-actividad {
+    flex-direction: row;
+  }
+
+  .tarjeta-actividad__imagen {
+    width: 40%;
+    aspect-ratio: auto;
+    height: auto;
+    align-self: stretch;
+  }
+
+  .tarjeta-actividad__boton {
+    width: auto;
+  }
+}
+
+/* --- Tarjeta de barrio ---
+   También usa container query. Cuando la tarjeta tiene lugar
+   (≥ 20rem, p. ej. una por fila en mobile o dos en tablet) la imagen
+   pasa al costado como miniatura y la lista queda más compacta.
+   En desktop (cuatro por fila, contenedor angosto) es vertical. */
+.grilla-barrios__item {
+  container-type: inline-size;
+  container-name: barrio;
+}
+
+.tarjeta-barrio {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-fondo);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.tarjeta-barrio__imagen {
+  aspect-ratio: 4 / 3;
+  height: auto;
+}
+
+.tarjeta-barrio__cuerpo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md);
+}
+
+.tarjeta-barrio__nombre {
+  font-size: var(--texto-grande);
+}
+
+.tarjeta-barrio__resumen {
+  color: var(--color-texto-suave);
+}
+
+@container barrio (min-width: 20rem) {
+  .tarjeta-barrio {
+    flex-direction: row;
+  }
+
+  .tarjeta-barrio__imagen {
+    width: 35%;
+    aspect-ratio: auto;
+    height: auto;
+    align-self: stretch;
+  }
+
+  .tarjeta-barrio__nombre {
+    font-size: var(--texto-base);
+  }
+
+  .tarjeta-barrio__resumen {
+    font-size: var(--texto-pequeno);
+  }
+}
+
+/* --- Dato de impacto --- */
+.dato-impacto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xs);
+  padding: var(--espacio-md);
+  background-color: var(--color-fondo);
+  border-top: 4px solid var(--color-marca);
+  border-radius: var(--radio);
+}
+
+.dato-impacto__numero {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: var(--texto-titulo);
+  line-height: 1.1;
+  color: var(--color-marca-oscuro);
+}
+
+.dato-impacto__descripcion {
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-suave);
+}
+
+/* --- Formulario de contacto --- */
+.formulario-contacto {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--espacio-md);
+}
+
+/* --- Grupo de redes --- */
+.redes {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-md);
+}
+
+.redes__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  min-height: 44px;
+  color: var(--color-marca-oscuro);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.redes__enlace:hover,
+.redes__enlace:focus-visible {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   6. ORGANISMOS
+   ========================================================= */
+
+/* --- Encabezado ---
+   Mobile/tablet: logo + hamburguesa; el menú y «Doná» se despliegan abajo.
+   Desktop: logo col. 1–3, menú col. 4–10, «Doná» col. 11–12. */
+.encabezado {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-marca);
+}
+
+.encabezado__grilla {
+  align-items: center;
+  padding-block: var(--espacio-sm);
+  row-gap: var(--espacio-sm);
+}
+
+.encabezado .encabezado__logo {
+  grid-column: 1 / -2;
+  grid-row: 1;
+  justify-self: start;
+  /* el blanco sobre celeste (~3,4:1) cumple para texto grande y negrita */
+}
+
+.encabezado__toggle {
+  grid-column: -2 / -1;
+  grid-row: 1;
+  justify-self: end;
+  display: none; /* se muestra solo con JS */
+  align-items: center;
+  gap: var(--espacio-sm);
+  min-height: 44px;
+  padding: var(--espacio-sm);
+  background: transparent;
+  border: 2px solid var(--color-fondo);
+  border-radius: var(--radio);
+  color: var(--color-fondo);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.js .encabezado__toggle {
+  display: inline-flex;
+}
+
+/* Ícono hamburguesa dibujado con CSS */
+.encabezado__toggle-barras,
+.encabezado__toggle-barras::before,
+.encabezado__toggle-barras::after {
+  display: block;
+  width: 1.25rem;
+  height: 2px;
+  background-color: currentColor;
+  position: relative;
+}
+
+.encabezado__toggle-barras::before,
+.encabezado__toggle-barras::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.encabezado__toggle-barras::before { top: -6px; }
+.encabezado__toggle-barras::after  { top: 6px; }
+
+.encabezado__toggle-texto {
+  font-size: var(--texto-pequeno);
+}
+
+.encabezado__nav {
+  padding-bottom: var(--espacio-sm);
+}
+
+.encabezado__dona {
+  justify-self: start;
+  margin-bottom: var(--espacio-sm);
+}
+
+/* Menú cerrado (solo si hay JS; sin JS queda visible) */
+.js .encabezado__toggle[aria-expanded="false"] ~ .encabezado__nav,
+.js .encabezado__toggle[aria-expanded="false"] ~ .encabezado__dona {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .js .encabezado__toggle {
+    display: none;
+  }
+
+  .encabezado .encabezado__logo { grid-column: 1 / 4; }
+
+  .encabezado__nav,
+  .js .encabezado__toggle[aria-expanded="false"] ~ .encabezado__nav {
+    display: block;
+    grid-column: 4 / 11;
+    grid-row: 1;
+    padding-bottom: 0;
+  }
+
+  .encabezado__dona,
+  .js .encabezado__toggle[aria-expanded="false"] ~ .encabezado__dona {
+    display: inline-flex;
+    grid-column: 11 / 13;
+    grid-row: 1;
+    justify-self: end;
+    margin-bottom: 0;
+  }
+
+  .menu {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: var(--espacio-md);
+  }
+}
+
+/* --- Hero ---
+   Mobile/tablet: apilado (texto arriba, imagen abajo).
+   Desktop: texto col. 1–7, imagen col. 8–12. */
+.hero {
+  padding-block: var(--espacio-lg) var(--espacio-seccion);
+  background: linear-gradient(180deg, var(--color-superficie), var(--color-fondo));
+}
+
+.hero .contenedor {
+  align-items: center;
+}
+
+.hero__texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+}
+
+.hero__antetitulo {
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-marca-oscuro);
+}
+
+.hero__titulo {
+  font-size: var(--texto-display);
+  line-height: 1.1;
+}
+
+.hero__bajada {
+  color: var(--color-texto-suave);
+  max-width: 55ch;
+}
+
+.hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-md);
+  margin-top: var(--espacio-sm);
+}
+
+.hero__imagen img {
+  aspect-ratio: 4 / 3;
+}
+
+@media (min-width: 1024px) {
+  .hero__texto  { grid-column: 1 / 8; }
+  .hero__imagen { grid-column: 8 / 13; }
+}
+
+/* --- Quiénes somos ---
+   Desktop: texto col. 1–6, imagen col. 7–12. */
+.seccion-nosotros__texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+}
+
+.seccion-nosotros__texto .seccion__titulo {
+  margin-bottom: 0;
+}
+
+.seccion-nosotros__subtitulo {
+  font-size: var(--texto-grande);
+  margin-top: var(--espacio-sm);
+}
+
+.seccion-nosotros__lista {
+  padding-left: var(--espacio-lg);
+}
+
+.seccion-nosotros__imagen img {
+  aspect-ratio: 4 / 3;
+}
+
+@media (min-width: 1024px) {
+  .seccion-nosotros .contenedor { align-items: center; }
+  .seccion-nosotros__texto  { grid-column: 1 / 7; }
+  .seccion-nosotros__imagen { grid-column: 7 / 13; }
+}
+
+/* --- Grilla de actividades ---
+   Cada tarjeta ocupa 4 columnas: 1 por fila (mobile), 2 (tablet), 3 (desktop). */
+.grilla-actividades__lista > .grilla-actividades__item {
+  grid-column: span 4;
+}
+
+.grilla-actividades__mensaje-vacio {
+  display: none;
+  padding: var(--espacio-lg);
+  background-color: var(--color-fondo);
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio);
+  text-align: center;
+  color: var(--color-texto-suave);
+}
+
+/* Variante: no hay actividades cargadas */
+.grilla-actividades--vacia .grilla-actividades__lista {
+  display: none;
+}
+
+.grilla-actividades--vacia .grilla-actividades__mensaje-vacio {
+  display: block;
+}
+
+/* --- Grilla de barrios ---
+   4 col. (mobile y tablet) → 3 col. en desktop: cuatro por fila. */
+.grilla-barrios__lista > .grilla-barrios__item {
+  grid-column: span 4;
+}
+
+@media (min-width: 1024px) {
+  .grilla-barrios__lista > .grilla-barrios__item {
+    grid-column: span 3;
+  }
+}
+
+/* --- Banda de impacto ---
+   Cada dato 2 col. (2 por fila en mobile, 4 en tablet) → 3 col. en desktop. */
+.banda-impacto__lista > .dato-impacto {
+  grid-column: span 2;
+}
+
+@media (min-width: 1024px) {
+  .banda-impacto__lista > .dato-impacto {
+    grid-column: span 3;
+  }
+}
+
+/* --- Cómo ayudar ---
+   Cada bloque 4 col. (1 por fila mobile, 2 tablet) → 3 col. en desktop. */
+.seccion-ayudar__lista > .seccion-ayudar__bloque {
+  grid-column: span 4;
+}
+
+.seccion-ayudar__bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+}
+
+.seccion-ayudar__bloque p {
+  flex-grow: 1;
+  color: var(--color-texto-suave);
+}
+
+.seccion-ayudar__titulo {
+  font-size: var(--texto-grande);
+}
+
+@media (min-width: 1024px) {
+  .seccion-ayudar__lista > .seccion-ayudar__bloque {
+    grid-column: span 3;
+  }
+}
+
+/* --- Contacto ---
+   Desktop: formulario col. 1–7, datos col. 8–12. */
+.seccion-contacto__titulo {
+  margin-bottom: 0;
+}
+
+.seccion-contacto__datos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+}
+
+.seccion-contacto__subtitulo {
+  font-size: var(--texto-grande);
+  margin-top: var(--espacio-md);
+}
+
+.seccion-contacto__subtitulo:first-child {
+  margin-top: 0;
+}
+
+.formulario-contacto .boton {
+  align-self: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .formulario-contacto       { grid-column: 1 / 8; }
+  .seccion-contacto__datos   { grid-column: 8 / 13; }
+}
+
+/* --- Pie de página ---
+   Mobile: apilado. Tablet: dos partes de 4 col. Desktop: tres partes de 4 col. */
+.pie {
+  padding-block: var(--espacio-lg);
+  background-color: var(--color-texto);
+  color: var(--color-fondo);
+  font-size: var(--texto-pequeno);
+}
+
+.pie__parte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+}
+
+.pie__titulo {
+  font-size: var(--texto-base);
+}
+
+.pie__lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xs);
+}
+
+.pie__legal {
+  padding-top: var(--espacio-md);
+  border-top: 1px solid rgb(255 255 255 / 0.2);
+  color: var(--color-borde);
+}
+
+@media (min-width: 768px) {
+  .pie .grilla > .pie__parte  { grid-column: span 4; }
+  .pie .grilla > .pie__marca  { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1024px) {
+  .pie .grilla > .pie__marca  { grid-column: span 4; }
+}
+
+
+/* =========================================================
+   7. UTILIDADES
+   ========================================================= */
+
+/* Oculto a la vista, legible para lectores de pantalla */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Enlace para saltar al contenido (aparece con el foco) */
+.saltar {
+  position: absolute;
+  left: var(--espacio-md);
+  top: -100px;
+  z-index: 20;
+  padding: var(--espacio-sm) var(--espacio-md);
+  background-color: var(--color-accion);
+  color: var(--color-texto);
+  font-weight: 700;
+  border-radius: var(--radio);
+}
+
+.saltar:focus {
+  top: var(--espacio-md);
+}
